@@ -26,4 +26,7 @@ def kolom_tertentu():
     st.write(df.iloc[:, 2: 10])
 
 def nama():
-    st.caption("Charisa Martha / 184240003")
+    st.markdown(
+        "<p style='text-align: center;'>Charisa Martha / 184240003</p>",
+        unsafe_allow_html=True
+    )
