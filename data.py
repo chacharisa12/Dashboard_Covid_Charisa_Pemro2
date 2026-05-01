@@ -61,7 +61,7 @@ def nama():
 
 # filter
 def filter_data(df, year=None):
-    if year:
+    if year != "Semua Tahun":
         df = df[df['Date'].astype(str).str.contains(str(year))]
     return df
 
