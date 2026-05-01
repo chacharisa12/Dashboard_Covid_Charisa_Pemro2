@@ -4,7 +4,7 @@ import plotly.express as px
 
 # dfungsi 
 def load_data():
-    df = pd.read_csv('dataset\covid_19_indonesia_time_series_all.csv')
+    df = pd.read_csv('covid_19_indonesia_time_series_all.csv')
     return df
 
 # menampilkan data dalam tabel
