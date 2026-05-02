@@ -6,8 +6,16 @@ from streamlit_tags import st_tags_sidebar
 # dfungsi 
 def load_data():
     df = pd.read_csv("covid_19_indonesia_time_series_all.csv")
+
     df = df[df["Location"] != "Indonesia"]
-    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+
+    df["Date"] = pd.to_datetime(
+        df["Date"],
+        errors="coerce"
+    )
+
+    df = df.dropna(subset=["Date"])
+
     return df
 
 # menampilkan data dalam tabel
