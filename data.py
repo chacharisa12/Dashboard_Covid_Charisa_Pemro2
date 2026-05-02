@@ -5,8 +5,9 @@ from streamlit_tags import st_tags_sidebar
 
 # dfungsi 
 def load_data():
-    df = pd.read_csv('covid_19_indonesia_time_series_all.csv')
+    df = pd.read_csv("covid_19_indonesia_time_series_all.csv")
     df = df[df["Location"] != "Indonesia"]
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     return df
 
 # menampilkan data dalam tabel
@@ -190,7 +191,15 @@ def bar_chart1(df):
         labels={'Total Deaths': 'Total Kematian', 'Location': 'Provinsi'}
     )
 
-    fig.update_layout(xaxis_title='Provinsi', yaxis_title='Total Kematian', title_x=0.5)
+    fig.update_layout(
+    title={
+        "text": "5 Provinsi dengan Kematian Tertinggi",
+        "x": 0.5,
+        "xanchor": "center"
+    },
+    xaxis_title="Provinsi",
+    yaxis_title="Total Kematian"
+)
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -210,43 +219,58 @@ def bar_chart2(df):
         labels={'Total Recovered': 'Total Kesembuhan', 'Location': 'Provinsi'}
     )
 
-    fig.update_layout(xaxis_title='Provinsi', yaxis_title='Total Kesembuhan', title_x=0.5)
+    fig.update_layout(
+    title={
+        "text": "5 Provinsi dengan Kesembuhan Tertinggi",
+        "x": 0.5,
+        "xanchor": "center"
+    },
+    xaxis_title="Provinsi",
+    yaxis_title="Total Kematian")
 
     st.plotly_chart(fig, use_container_width=True)
 
 # map chart
 def map_chart(df, year=None):
-    df['Date'] = pd.to_datetime(df['Date'])
+    df["Date"] = pd.to_datetime(df["Date"])
 
-    if year:
-        df = df[df['Date'].dt.year == year]
+    if year and year != "Semua Tahun":
+        df = df[df["Date"].dt.year == int(year)]
 
-    df_agg = df.groupby(['Location', 'Latitude', 'Longitude'], as_index=False) ['New Cases'].sum()
-    df_map = df_agg.dropna(subset=['Latitude', 'Longitude', 'New Cases'])
+    df_agg = df.groupby(
+        ["Location", "Latitude", "Longitude"],
+        as_index=False
+    )["New Cases"].sum()
+
+    df_map = df_agg.dropna(subset=["Latitude", "Longitude", "New Cases"])
 
     if df_map.empty:
-        st.info("Tidak ada data")
+        st.warning("Data tidak ditemukan")
         return
-    
+
     fig = px.scatter_mapbox(
         df_map,
         lat="Latitude",
-        lon='Longitude',
-        size='New Cases',
-        color='New Cases',
-        hover_name='Location',
+        lon="Longitude",
+        size="New Cases",
+        color="New Cases",
+        hover_name="Location",
         zoom=3,
-        center={'lat':-2.5, "lon": 118},
+        center={"lat": -2.5, "lon": 118},
         size_max=20,
         opacity=0.7,
-        color_continuous_scale='OrRd',
-        title=f"Sebaran Kasus Baru Covid-19 di Indonesia ({year if year else 'Semua Tahun'})"
+        color_continuous_scale="OrRd"
     )
 
     fig.update_layout(
+        title={
+            "text": f"Sebaran Kasus Baru Covid-19 Indonesia ({year if year != 'Semua Tahun' else 'Semua Tahun'})",
+            "x": 0.5,
+            "xanchor": "center"
+        },
         mapbox_style="carto-positron",
         height=600,
-        margin={"r":0, "t":0, "l":0, "b":0}
+        margin={"r":0,"t":60,"l":0,"b":0}
     )
 
     st.plotly_chart(fig, use_container_width=True)

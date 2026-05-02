@@ -23,7 +23,7 @@ if menu == "Home":
     pie_chart(df_filtered)
     bar_chart1(df_filtered)
     bar_chart2(df_filtered)
-    map_chart(df_filtered)
+    map_chart(df, year)
 elif menu == "Halaman Data":
     judul()
     year = select_year()
